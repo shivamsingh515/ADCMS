@@ -43,3 +43,28 @@ For deployment, use `npx prisma migrate deploy`.
 
 ## Notes
 This version uses manual sensor readings and an irrigation simulator. It does not control real pumps or provide agronomic guarantees. Moisture thresholds are editable sample values and should be calibrated for local soil, crop variety and growth stage before real-world use.
+
+## Added features
+
+- Irrigation planner to create future watering plans for a field.
+- Schedule status can be changed to completed or cancelled.
+- CSV export for the irrigation history table.
+- The planner uses PostgreSQL when the API is connected and keeps temporary plans in the browser in demo mode.
+- No pump is controlled and no automatic job runs at the scheduled time.
+
+The planner adds the `IrrigationSchedule` table through the migration in
+`backend/prisma/migrations/202611150002_add_irrigation_schedules/migration.sql`.
+After starting PostgreSQL, apply it from the backend folder:
+
+```bash
+cd backend
+npx prisma migrate dev
+```
+
+## Frontend deployment
+
+The React app can be deployed as a Vite project on Vercel with `frontend` as
+the Root Directory, `npm run build` as the build command, and `dist` as the
+output directory. Set `VITE_API_URL` to the public URL of a separately hosted
+AgroSmart API to use PostgreSQL from the deployed site. Without that API URL,
+the app remains usable in demo mode; database changes will not be saved.
