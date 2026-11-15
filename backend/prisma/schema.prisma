@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("farmer")
+  createdAt    DateTime @default(now())
+  fields       Field[]
+}
+
+model Crop {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  minMoisture Float
+  maxMoisture Float
+  fields      Field[]
+}
+
+model Field {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  cropId    Int
+  name      String
+  area      Float
+  soilType  String
+  createdAt DateTime @default(now())
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  crop            Crop             @relation(fields: [cropId], references: [id], onDelete: Restrict)
+  soilReadings    SoilReading[]
+  irrigationLogs  IrrigationLog[]
+  recommendations Recommendation[]
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model SoilReading {
+  id         Int      @id @default(autoincrement())
+  fieldId    Int
+  moisture   Float
+  source     String   @default("manual")
+  recordedAt DateTime @default(now())
+
+  field Field @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@index([fieldId, recordedAt])
+}
+
+model IrrigationLog {
+  id              Int      @id @default(autoincrement())
+  fieldId         Int
+  waterUsedLitres Float
+  durationMinutes Int
+  method          String   @default("drip")
+  status          String   @default("completed")
+  createdAt       DateTime @default(now())
+
+  field Field @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@index([fieldId, createdAt])
+}
+
+model Recommendation {
+  id           Int      @id @default(autoincrement())
+  fieldId      Int
+  status       String
+  message      String
+  rainExpected Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  field Field @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@index([fieldId, createdAt])
+}
