@@ -4,11 +4,12 @@ import {
   ClipboardList, Settings, Bell, Search, Plus, ChevronDown, ArrowUpRight,
   ArrowDownRight, CloudSun, CloudRain, Sun, Clock3, CheckCircle2,
   AlertTriangle, Play, Pause, MoreHorizontal, Menu, X, Waves, CalendarDays,
-  TrendingUp, MapPin, ThermometerSun, CircleHelp
+  TrendingUp, MapPin, ThermometerSun, CircleHelp, Download
 } from 'lucide-react';
 import { initialFields, initialLogs, crops } from './data/demoData.js';
 import { getIrrigationRecommendation } from './irrigation.js';
 import { apiRequest } from './services.js';
+import SchedulePanel from './components/SchedulePanel.jsx';
 
 const money = (value) => new Intl.NumberFormat('en-IN').format(value);
 
@@ -36,12 +37,26 @@ function mapApiLog(log) {
     method: log.method
   };
 }
+function downloadIrrigationCsv(logs) {
+  const columns = ['Field', 'Date', 'Method', 'Duration (minutes)', 'Water used (litres)'];
+  const rows = logs.map((log) => [log.field, log.date, log.method, log.duration, log.water]);
+  const escapeCell = (value) => `"${String(value ?? '').replaceAll('"', '""')}"`;
+  const csv = [columns, ...rows].map((row) => row.map(escapeCell).join(',')).join('\r\n');
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'agrosmart-irrigation-history.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 const navItems = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'fields', label: 'My fields', icon: Tractor },
   { id: 'monitoring', label: 'Soil monitoring', icon: Gauge },
   { id: 'irrigation', label: 'Irrigation', icon: Droplets },
-  { id: 'analytics', label: 'Analytics', icon: ClipboardList }
+  { id: 'analytics', label: 'Analytics', icon: ClipboardList },
+  { id: 'schedules', label: 'Irrigation planner', icon: CalendarDays }
 ];
 
 function App() {
@@ -223,6 +238,7 @@ function App() {
           {active === 'monitoring' && <MonitoringPage fields={fields} selected={selected} onSelect={setSelectedField} onUpdate={updateMoisture}/>}
           {active === 'irrigation' && <IrrigationPage fields={fields} logs={logs} onIrrigate={startIrrigation}/>}
           {active === 'analytics' && <AnalyticsPage fields={fields} logs={logs} totalArea={totalArea} waterUsed={waterUsed}/>}
+          <div hidden={active !== 'schedules'}><SchedulePanel fields={fields} storageMode={storageMode}/></div>
           <footer className="footer"><span>© 2026 AgroSmart</span><span><span className="live-dot"/> All systems operational <i/> Made for smarter farming</span></footer>
         </div>
       </main>
@@ -291,7 +307,7 @@ function MonitoringPage({ fields, selected, onSelect, onUpdate }) {
 }
 
 function IrrigationPage({ fields, logs, onIrrigate }) {
-  return <><PageTitle eyebrow="WATER MANAGEMENT" title="Irrigation control" subtitle="Run a safe software simulation and keep a record of water used." action={<span className="demo-pill"><span/> SIMULATION ONLY</span>}/><div className="irrigation-banner"><div className="irrigation-watermark"><Waves size={94}/></div><div className="eyebrow light-eyebrow">SIMULATED WATER CONTROL</div><h2>Manage irrigation, one field at a time.</h2><p>Starting irrigation here records a sample water-use entry and increases the field's simulated moisture reading. No physical pump is connected.</p></div><div className="section-heading"><div><h2>Field irrigation</h2><p>Select a field to record a simulated irrigation event</p></div></div><div className="irrigation-grid">{fields.map((field) => { const rec = getIrrigationRecommendation(field.moisture, field.threshold); return <div className="panel irrigation-card" key={field.id}><div className="irrigation-card-head"><div className="crop-avatar">{crops.find((crop) => crop.name === field.crop)?.icon || '🌱'}</div><span className={`status-pill ${rec.level}`}>{rec.status}</span></div><h3>{field.name}</h3><p>{field.crop} · {field.area} acres</p><div className="irrigation-moisture"><span>Soil moisture</span><strong>{field.moisture}%</strong></div><div className="progress-track"><div style={{ width: `${field.moisture}%` }} className={field.moisture < field.threshold ? 'bar-low' : ''}/></div><button className="button button-primary full-button" onClick={() => onIrrigate(field)}><Play size={15} fill="currentColor"/> Simulate irrigation</button><small>Est. {money(Math.round(field.area * 175))} L · 20 min simulation</small></div>; })}</div><section className="panel readings-table"><div className="panel-header"><div><h3>Irrigation history</h3><p>Recorded simulation events</p></div><span className="table-count">{logs.length} records</span></div><LogsTable logs={logs}/></section></>;
+  return <><PageTitle eyebrow="WATER MANAGEMENT" title="Irrigation control" subtitle="Run a safe software simulation and keep a record of water used." action={<span className="demo-pill"><span/> SIMULATION ONLY</span>}/><div className="irrigation-banner"><div className="irrigation-watermark"><Waves size={94}/></div><div className="eyebrow light-eyebrow">SIMULATED WATER CONTROL</div><h2>Manage irrigation, one field at a time.</h2><p>Starting irrigation here records a sample water-use entry and increases the field's simulated moisture reading. No physical pump is connected.</p></div><div className="section-heading"><div><h2>Field irrigation</h2><p>Select a field to record a simulated irrigation event</p></div></div><div className="irrigation-grid">{fields.map((field) => { const rec = getIrrigationRecommendation(field.moisture, field.threshold); return <div className="panel irrigation-card" key={field.id}><div className="irrigation-card-head"><div className="crop-avatar">{crops.find((crop) => crop.name === field.crop)?.icon || '🌱'}</div><span className={`status-pill ${rec.level}`}>{rec.status}</span></div><h3>{field.name}</h3><p>{field.crop} · {field.area} acres</p><div className="irrigation-moisture"><span>Soil moisture</span><strong>{field.moisture}%</strong></div><div className="progress-track"><div style={{ width: `${field.moisture}%` }} className={field.moisture < field.threshold ? 'bar-low' : ''}/></div><button className="button button-primary full-button" onClick={() => onIrrigate(field)}><Play size={15} fill="currentColor"/> Simulate irrigation</button><small>Est. {money(Math.round(field.area * 175))} L · 20 min simulation</small></div>; })}</div><section className="panel readings-table"><div className="panel-header"><div><h3>Irrigation history</h3><p>Recorded simulation events</p></div><div className="history-actions"><span className="table-count">{logs.length} records</span><button className="small-outline" onClick={() => downloadIrrigationCsv(logs)} disabled={!logs.length}><Download size={14}/> Export CSV</button></div></div><LogsTable logs={logs}/></section></>;
 }
 
 function LogsTable({ logs }) {
