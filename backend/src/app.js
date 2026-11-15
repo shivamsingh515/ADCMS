@@ -4,6 +4,7 @@ import authRoutes from './routes/authRoutes.js';
 import fieldRoutes from './routes/fieldRoutes.js';
 import irrigationRoutes from './routes/irrigationRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
+import scheduleRoutes from './routes/scheduleRoutes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -19,6 +20,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api', fieldRoutes);
 app.use('/api', irrigationRoutes);
 app.use('/api', analyticsRoutes);
+app.use('/api', scheduleRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
