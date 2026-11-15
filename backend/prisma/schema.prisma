@@ -34,11 +34,12 @@ model Field {
   soilType  String
   createdAt DateTime @default(now())
 
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  crop            Crop             @relation(fields: [cropId], references: [id], onDelete: Restrict)
-  soilReadings    SoilReading[]
-  irrigationLogs  IrrigationLog[]
-  recommendations Recommendation[]
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  crop               Crop               @relation(fields: [cropId], references: [id], onDelete: Restrict)
+  soilReadings       SoilReading[]
+  irrigationLogs     IrrigationLog[]
+  recommendations    Recommendation[]
+  irrigationSchedules IrrigationSchedule[]
 
   @@unique([userId, name])
   @@index([userId])
@@ -81,4 +82,20 @@ model Recommendation {
   field Field @relation(fields: [fieldId], references: [id], onDelete: Cascade)
 
   @@index([fieldId, createdAt])
+}
+
+model IrrigationSchedule {
+  id              Int      @id @default(autoincrement())
+  fieldId         Int
+  scheduledFor    DateTime
+  durationMinutes Int      @default(20)
+  method          String   @default("drip")
+  notes           String?
+  status          String   @default("pending")
+  createdAt       DateTime @default(now())
+
+  field Field @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@index([status, scheduledFor])
+  @@index([fieldId, scheduledFor])
 }
