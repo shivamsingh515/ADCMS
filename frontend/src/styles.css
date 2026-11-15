@@ -14,3 +14,28 @@
 @media(max-width:900px){.sidebar{width:220px}.main-area{margin-left:220px}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content-grid,.bottom-grid,.monitor-layout{grid-template-columns:1fr}.banner-weather{margin-right:0}.welcome-banner{height:175px}}
 @media(max-width:650px){.sidebar{transform:translateX(-100%);transition:transform .2s;width:260px;box-shadow:10px 0 35px #243b2a15}.sidebar.sidebar-open{transform:translateX(0)}.mobile-close,.mobile-menu{display:grid}.main-area{margin-left:0}.topbar{height:58px;padding:0 15px}.mobile-menu{margin-left:-7px}.breadcrumb{font-size:10px}.top-actions{gap:10px}.demo-pill{font-size:7px;padding:5px 7px}.page-content{padding:18px 14px}.welcome-banner{padding:22px 20px;height:auto;min-height:166px}.welcome-banner h1{font-size:20px;max-width:245px}.welcome-banner p{font-size:10px;max-width:235px;line-height:1.5}.banner-weather{padding:9px;margin-left:5px;gap:7px}.weather-sun{height:30px;width:30px}.banner-weather strong{font-size:17px}.banner-weather span{font-size:8px;max-width:82px}.banner-leaf{display:none}.section-heading{margin-top:22px}.stat-grid{gap:8px}.stat-card{padding:12px;min-height:113px}.stat-top{font-size:9px}.stat-icon{width:27px;height:27px}.stat-value{font-size:22px}.stat-bottom{align-items:flex-start;flex-direction:column;gap:3px}.stat-bottom>span{font-size:8px}.panel{padding:14px}.field-row{gap:7px}.field-name{min-width:76px}.mini-progress{display:none}.field-moisture{min-width:38px}.status-pill{font-size:7px;padding:5px 6px}.recommendation-item{gap:7px}.recommend-text span{max-width:175px}.recommend-action{font-size:8px;padding:6px}.tip-tag{display:none}.footer{font-size:7px}.page-title-row{align-items:flex-start;gap:10px}.page-title-row h1{font-size:22px}.page-title-row p{font-size:9px;line-height:1.5;max-width:260px}.page-title-row>.button{padding:9px;font-size:9px;white-space:nowrap}.field-card-grid,.irrigation-grid{grid-template-columns:1fr}.toolbar{gap:10px}.search-box{width:100%}.muted-count{white-space:nowrap}.moisture-reading{gap:16px;padding:19px 3px}.reading-circle{width:120px;height:120px}.reading-circle strong{font-size:27px}.reading-details h2{font-size:14px}.target-range{gap:8px}.monitor-main,.decision-panel{padding:15px}.rain-toggle{flex-wrap:wrap}.rain-toggle span{margin-left:24px;width:100%}.irrigation-watermark{right:15px;opacity:.6}.irrigation-banner{padding:20px}.irrigation-banner h2{font-size:16px;max-width:260px}.irrigation-banner p{max-width:270px;font-size:9px}.form-row{grid-template-columns:1fr}.toast{max-width:calc(100vw - 25px);white-space:normal;font-size:9px}.welcome-banner .eyebrow{font-size:7px}.top-avatar{display:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* Irrigation planner */
+.schedule-layout{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);gap:14px;align-items:start}
+.schedule-form,.schedule-list{padding:20px}
+.schedule-label{display:block;margin-top:16px;color:#89968c;font-size:9px;font-weight:700;letter-spacing:.7px}
+.schedule-label input,.schedule-label select,.schedule-label textarea{display:block;width:100%;margin-top:7px;padding:10px;border:1px solid #e4eae4;border-radius:7px;background:#fff;color:#506054;font:400 10px 'DM Sans',sans-serif;outline:none}
+.schedule-label input:focus,.schedule-label select:focus,.schedule-label textarea:focus{border-color:#75a982;box-shadow:0 0 0 3px #75a98220}
+.schedule-label textarea{resize:vertical;min-height:76px}
+.schedule-message{font-size:9px;color:#477b54;line-height:1.5;margin:11px 0 0}
+.schedule-items{margin-top:13px}
+.schedule-item{display:flex;align-items:flex-start;gap:11px;padding:14px 0;border-top:1px solid #eff2ef}
+.schedule-date-icon{height:34px;width:34px;display:grid;place-items:center;flex:0 0 auto;border-radius:9px;background:#edf5ef;color:#4e895d}
+.schedule-details{flex:1;min-width:0}
+.schedule-details strong{display:block;color:#3b4b40;font-size:10px}
+.schedule-details>span:not(.status-pill){display:block;margin-top:5px;color:#929e94;font-size:9px;line-height:1.5}
+.schedule-details p{margin:5px 0 8px;color:#728076;font-size:9px;line-height:1.5}
+.schedule-details .status-pill{display:inline-block;margin-top:8px;text-transform:capitalize}
+.schedule-actions{display:flex;gap:5px}
+.schedule-actions button{height:29px;width:29px;display:grid;place-items:center;border:1px solid #e5ece6;border-radius:6px;background:#fff;color:#63836a}
+.schedule-actions button:hover{background:#f1f7f1}
+.history-actions{display:flex;align-items:center;gap:10px}
+.empty-large svg{color:#7a9a80;margin-bottom:5px}
+@media(max-width:900px){.schedule-layout{grid-template-columns:1fr}}
+@media(max-width:650px){.schedule-form,.schedule-list{padding:15px}.schedule-item{gap:8px}.schedule-actions{flex-direction:column}.history-actions{align-items:flex-end;gap:7px}.history-actions .small-outline{font-size:8px;padding:6px 7px}}
